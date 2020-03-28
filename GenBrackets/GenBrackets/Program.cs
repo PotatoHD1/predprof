@@ -68,7 +68,7 @@ namespace GenBrackets
                 return true;
             }
             return false;
-        }
+        }        
         static void FirstGenMassive(ref int[,] brMassive)
         {
             for (int i = 1; i < brMassive.GetLength(1); i++)

@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<stetic-interface>
+  <configuration>
+    <images-root-path>..</images-root-path>
+  </configuration>
+  <import>
+    <widget-library name="glade-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <widget-library name="../bin/Debug/VipuklieObolochki.exe" internal="true" />
+  </import>
+  <widget class="Gtk.Window" id="MainWindow" design-size="967 717">
+    <property name="MemberName" />
+    <property name="Title" translatable="yes">MainWindow</property>
+    <property name="WindowPosition">CenterOnParent</property>
+    <property name="BorderWidth">3</property>
+    <signal name="DeleteEvent" handler="OnDeleteEvent" />
+    <signal name="DragDrop" handler="OnDragDrop" />
+    <child>
+      <widget class="Gtk.Fixed" id="fixed8">
+        <property name="MemberName" />
+        <property name="HasWindow">False</property>
+        <child>
+          <widget class="Gtk.Button" id="button11">
+            <property name="MemberName" />
+            <property name="CanFocus">True</property>
+            <property name="Type">TextOnly</property>
+            <property name="Label" translatable="yes">GtkButton</property>
+            <property name="UseUnderline">True</property>
+            <signal name="Clicked" handler="OnButton11Clicked" />
+          </widget>
+          <packing>
+            <property name="X">733</property>
+            <property name="Y">190</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.DrawingArea" id="drawingarea2">
+            <property name="MemberName" />
+            <property name="WidthRequest">500</property>
+            <property name="HeightRequest">500</property>
+            <signal name="ButtonPressEvent" handler="OnDrawingarea2ButtonPressEvent" />
+          </widget>
+          <packing>
+            <property name="X">118</property>
+            <property name="Y">141</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Label" id="label1">
+            <property name="MemberName" />
+            <property name="LabelProp" translatable="yes">label1</property>
+          </widget>
+          <packing>
+            <property name="X">791</property>
+            <property name="Y">289</property>
+          </packing>
+        </child>
+      </widget>
+    </child>
+  </widget>
+</stetic-interface>
