@@ -55,8 +55,8 @@ public partial class MainWindow
 		{
 			this.Child.ShowAll();
 		}
-		this.DefaultWidth = 967;
-		this.DefaultHeight = 717;
+		this.DefaultWidth = 1181;
+		this.DefaultHeight = 899;
 		this.Show();
 		this.DeleteEvent += new global::Gtk.DeleteEventHandler(this.OnDeleteEvent);
 		this.DragDrop += new global::Gtk.DragDropHandler(this.OnDragDrop);

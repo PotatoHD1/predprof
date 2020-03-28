@@ -1,16 +1,28 @@
 ﻿using System;
-using Gtk;
+using System.Drawing;
+using System.Windows.Forms;
 
 namespace VipuklieObolochki
 {
-    class MainClass
+    class MainClass : Form
     {
         public static void Main(string[] args)
         {
-            Application.Init();
-            MainWindow win = new MainWindow();
-            win.Show();
-            Application.Run();
+            Application.Run(new MainClass());
         }
+
+        public MainClass()
+        {
+            Button b = new Button();
+            b.Text = "Click Me!";
+            b.Click += new EventHandler(Button_Click);
+            Controls.Add(b);
+        }
+
+        private void Button_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Button Clicked!");
+        }
+
     }
 }

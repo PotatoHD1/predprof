@@ -2,7 +2,7 @@
 using Cairo;
 using Gdk;
 using Gtk;
-
+[Obsolete]
 public partial class MainWindow : Gtk.Window
 {
     int i = 0;
@@ -10,10 +10,7 @@ public partial class MainWindow : Gtk.Window
     {
         Build();
         drawingarea2.AddEvents((int)
-            (EventMask.ButtonPressMask
-            | EventMask.ButtonReleaseMask
-            | EventMask.KeyPressMask
-            | EventMask.PointerMotionMask));
+            EventMask.AllEventsMask);
 
     }
 
@@ -24,18 +21,18 @@ public partial class MainWindow : Gtk.Window
 
     }
 
-    [Obsolete]
+    
     private void OnButton11Clicked(object sender, EventArgs e)
     {
         i++;
         label1.Text = i.ToString();
 
     }
-    
+
     protected void OnDrawingarea2ButtonPressEvent(object o, ButtonPressEventArgs args)
     {
         DrawingArea area = drawingarea2;
-        Context g = Gdk.CairoHelper.Create(area.GdkWindow);
+        Context g = CairoHelper.Create(area.GdkWindow);
 
         PointD p1, p2, p3, p4;
         p1 = new PointD(10, 10);
@@ -58,11 +55,10 @@ public partial class MainWindow : Gtk.Window
         g.GetTarget().Dispose();
         g.Dispose();
     }
-
     protected void OnDragDrop(object o, DragDropArgs args)
     {
         DrawingArea area = drawingarea2;
-        Context g = Gdk.CairoHelper.Create(area.GdkWindow);
+        Context g = CairoHelper.Create(area.GdkWindow);
 
         PointD p1, p2, p3, p4;
         p1 = new PointD(10, 10);
