@@ -26,6 +26,13 @@ namespace longMath
         }
         public static VeryLong operator -(VeryLong vl1, VeryLong vl2)
         {
+            if (vl1.value[0] < 0 ^ vl2.value[0] < 0)
+                if (vl1.value[0] < 0)
+                    return vl2 + -vl1;
+                else
+                    return vl1 + -vl2;
+            else if (vl1.value[0] < 0 && vl2.value[0] < 0)
+                return vl2 - -vl1;
             List<int> result;
             if (vl1.value.Count <= vl2.value.Count)
             {
@@ -33,25 +40,6 @@ namespace longMath
                 {
                     vl1.value.Insert(0, 0);
                 }
-                result = vl2.value;
-                for (int i = vl1.value.Count - 1; i >= 0; i--)
-                {
-                    if (result[i] - vl1.value[i] >= 0)
-                        result[i] -= vl1.value[i];
-                    else
-                    {
-                        if (i != 0)
-                        {
-                            result[i] -= vl1.value[i] + (int)Math.Pow(10, lbase);
-                            result[i - 1]--;
-                        }
-                        else
-                        {
-                            result[i] -= vl1.value[i];
-                        }
-                    }
-                }
-
             }
             else
             {
@@ -59,14 +47,17 @@ namespace longMath
                 {
                     vl2.value.Insert(0, 0);
                 }
+            }
                 result = vl1.value;
-                for (int i = vl2.value.Count - 1; i >= 0; i--)
+            for (int i = vl1.value.Count - 1; i >= 0; i--)
+            {
+                if (result[i] - vl2.value[i] >= 0)
+                    result[i] -= vl2.value[i];
+                else
                 {
-                    if (result[i] - vl2.value[i] >= 0)
-                        result[i] -= vl2.value[i];
-                    else
+                    if (i != 0)
                     {
-                        if (i != 0)
+                        if (result[i - 1] != 0)
                         {
                             result[i] -= vl2.value[i] + (int)Math.Pow(10, lbase);
                             result[i - 1]--;
@@ -76,10 +67,26 @@ namespace longMath
                             result[i] -= vl2.value[i];
                         }
                     }
+                    else
+                    {
+                        result[i] -= vl2.value[i];
+                    }
                 }
             }
-         
-
+            for (int i = 0; i < result.Count; i++)
+            {
+                if (result[i] == 0)
+                    result.RemoveAt(0);
+                else
+                {
+                    break;
+                }
+            }
+            for (int i = 1; i < result.Count; i++)
+            {
+                if (result[i] < 0)
+                    result[i] *= -1;
+            }
             return new VeryLong(result);
         }
         public static VeryLong operator -(VeryLong vl1)
@@ -102,7 +109,6 @@ namespace longMath
         }
         public static VeryLong operator +(VeryLong vl1, VeryLong vl2)
         {
-            List<int> result;
             if (vl1.value[0] < 0 ^ vl2.value[0] < 0)
                 if (vl1.value[0] < 0)
                     return vl2 - -vl1;
@@ -110,6 +116,7 @@ namespace longMath
                     return vl1 - -vl2;
             else if (vl1.value[0] < 0 && vl2.value[0] < 0)
                 return -(-vl1 + -vl2);
+            List<int> result;
             if (vl1.value.Count <= vl2.value.Count)
             {
                 result = vl2.value;
