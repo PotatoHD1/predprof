@@ -604,6 +604,10 @@ namespace longMath
                 return vl2.ToString()==ToString();
             }
         }
+        public override int GetHashCode()
+        {
+            return ToString().GetHashCode();
+        }
         public static bool operator <(VeryLong vl1, VeryLong vl2)
         {
             return !(vl1 > vl2 || vl1 == vl2); // = !(vl1 > vl2) && !(vl1 == vl2)
