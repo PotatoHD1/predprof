@@ -627,12 +627,7 @@ namespace longMath
         }
         public static bool operator ==(VeryLong vl1, VeryLong vl2)
         {
-            if (vl1 == null ^ vl2 == null)
-                return false;            
-            else if(vl1 == null && vl2 == null)
-                return true;
-            else
-                return vl1.ToString() == vl2.ToString();
+            return vl1.ToString() == vl2.ToString();
         }
         public static bool operator >(VeryLong vl1, VeryLong vl2)
         {
@@ -693,12 +688,12 @@ namespace longMath
         }
         public static VeryLong operator +(VeryLong vl1, VeryLong vl2)
         {
-            if (vl1.value[0] < 0 ^ vl2.value[0] < 0)
-                if (vl1.value[0] < 0)
+            if (vl1 < 0 ^ vl2 < 0)
+                if (vl1 < 0)
                     return vl2 - -vl1;
                 else
                     return vl1 - -vl2;
-            else if (vl1.value[0] < 0 && vl2.value[0] < 0)
+            else if (vl1< 0 && vl2< 0)
                 return -(-vl1 + -vl2);
             List<int> result;
             if (vl1.value.Count <= vl2.value.Count)
@@ -743,12 +738,12 @@ namespace longMath
         }
         public static VeryLong operator -(VeryLong vl1, VeryLong vl2)
         {
-            if (vl1.value[0] < 0 ^ vl2.value[0] < 0)
-                if (vl1.value[0] < 0)
+            if (vl1 < 0 ^ vl2 < 0)
+                if (vl1 < 0)
                     return vl2 + -vl1;
                 else
                     return vl1 + -vl2;
-            else if (vl1.value[0] < 0 && vl2.value[0] < 0)
+            else if (vl1< 0 && vl2< 0)
                 return vl2 - -vl1;
             if (vl1.value.Count <= vl2.value.Count)
             {
@@ -805,10 +800,26 @@ namespace longMath
         }
         public static VeryLong operator *(VeryLong vl1, VeryLong vl2)
         {
+            if (vl1 < 0 ^ vl2 < 0)
+                if (vl1 < 0)
+                    return -(vl2 * -vl1);
+                else
+                    return -(vl1 * -vl2);
+            else if (vl1 < 0 && vl2 < 0)
+                return -vl2 * -vl1;
+            else if (vl1 == 0 || vl2 == 0)
+                return new VeryLong(0);
             return vl1;
         }
         public static VeryLong operator /(VeryLong vl1, VeryLong vl2)
         {
+            if (vl1 < 0 ^ vl2 < 0)
+                if (vl1 < 0)
+                    return -(vl2 / -vl1);
+                else
+                    return -(vl1 / -vl2);
+            else if (vl1 < 0 && vl2 < 0)
+                return -vl2 / -vl1;
             return vl1;
         }
         public static VeryLong operator %(VeryLong vl1, VeryLong vl2)
@@ -865,11 +876,18 @@ namespace longMath
             }
             else if (input.Contains("*"))
             {
-                List<string> numbers = new List<string>(input.Split('*'));
-                for (int i = 0; i < numbers.Count; i++)
+                string[] numbers = input.Split('*');
+                if (numbers.Length <= 1)
                 {
-
+                    Console.WriteLine("Слишком мало чисел");
+                    return;
                 }
+                VeryLong number = new VeryLong(numbers[0]);
+                for (int i = 1; i < numbers.Length; i++)
+                {
+                    number *= new VeryLong(numbers[i]);
+                }
+                Console.WriteLine(number.ToString());
             }
             #endregion
             else if (input.Contains("+"))
