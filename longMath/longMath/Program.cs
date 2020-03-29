@@ -593,6 +593,17 @@ namespace longMath
         }
         #endregion
         #endregion
+        public override bool Equals(object obj)
+        {
+            //Check for null and compare run-time types.
+            if ((obj == null) || !GetType().Equals(obj.GetType()))            
+                return false;            
+            else
+            {
+                VeryLong vl2 = (VeryLong)obj;
+                return vl2.ToString()==ToString();
+            }
+        }
         public static bool operator <(VeryLong vl1, VeryLong vl2)
         {
             return !(vl1 > vl2 || vl1 == vl2); // = !(vl1 > vl2) && !(vl1 == vl2)
@@ -611,7 +622,12 @@ namespace longMath
         }
         public static bool operator ==(VeryLong vl1, VeryLong vl2)
         {
-            return true;
+            if (vl1 == null ^ vl2 == null)
+                return false;            
+            else if(vl1 == null && vl2 == null)
+                return true;
+            else
+                return vl1.ToString() == vl2.ToString();
         }
         public static bool operator >(VeryLong vl1, VeryLong vl2)
         {
@@ -746,17 +762,14 @@ namespace longMath
         }
         public static VeryLong operator *(VeryLong vl1, VeryLong vl2)
         {
-
             return vl1;
         }
         public static VeryLong operator /(VeryLong vl1, VeryLong vl2)
         {
-
             return vl1;
         }
         public static VeryLong operator %(VeryLong vl1, VeryLong vl2)
         {
-
             return vl1;
         }
         public static VeryLong Pow(VeryLong number, VeryLong pow)
