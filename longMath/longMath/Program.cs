@@ -889,14 +889,33 @@ namespace longMath
             }
             else if (input.Contains("-"))
             {
-                string[] numbers = input.Split('-');
-                if (numbers.Length <= 1)
+                List<string> numbers = new List<string>(input.Replace("--", "ё").Split("-".ToCharArray()));
+                for (int i = 0; i < numbers.Count; i++)
+                {
+                    if (numbers[i].Contains("ё"))
+                    {
+                        numbers.InsertRange(i, numbers[i].Split('ё'));
+                        numbers.RemoveAt(i + 2);
+                        i++;
+                        numbers[i] = "-" + numbers[i];
+                    }
+                }
+                if (numbers.Count <= 1)
                 {
                     Console.WriteLine("Слишком мало чисел");
                     return;
                 }
+                for (int i = 0; i < numbers.Count - 1; i++)
+                {
+                    if (numbers[i] == "")
+                    {
+                        numbers[i + 1].Insert(0, "-");
+                        numbers.RemoveAt(i);
+                        i--;
+                    }
+                }
                 VeryLong number = new VeryLong(numbers[0]);
-                for (int i = 1; i < numbers.Length; i++)
+                for (int i = 1; i < numbers.Count; i++)
                 {
                     number -= new VeryLong(numbers[i]);
                 }
