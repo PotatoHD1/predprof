@@ -7,7 +7,8 @@ namespace longMath
     class VeryLong
     {
         const int lbase = 9;
-        public List<int> value { get; private set; }        
+        public List<int> value { get; private set; }
+        public int Length { get; private set; }
         public VeryLong(string value)
         {
             value = value.Replace(".", "").Replace(",", "");
@@ -26,6 +27,7 @@ namespace longMath
             }
             if (minus)
                 this.value[0] *= -1;
+            Length = value.Length;
 
         }
         #region overloadings
@@ -36,6 +38,7 @@ namespace longMath
         public VeryLong(int value)
         {
             this.value = new List<int> { value };
+            Length = value % 10 + 1;
         }
         public VeryLong(long value) : this(value.ToString()) { }
         public VeryLong(ulong value) : this(value.ToString()) { }
@@ -804,56 +807,40 @@ namespace longMath
         #region KaratsubaMultiply
         static VeryLong KaratsubaMultiply(VeryLong vl1, VeryLong vl2)
         {
+            if (vl1.Length + vl2.Length <= lbase)
+                return new VeryLong(vl1.value[0]*vl2.value[0]);
             int cutPos = GetCutPosition(vl1, vl2);
-            string a = GetFirstPart(vl1, cutPos);
-            string b = GetSecondPart(vl1, cutPos);
-            string c = GetFirstPart(vl2, cutPos);
-            string d = GetSecondPart(vl2, cutPos);
-            string ac = KaratsubaMultiply(a, c);
-            string bd = KaratsubaMultiply(b, d);
-            string ab_cd = KaratsubaMultiply(StringAddtion(a, b), StringAddtion(c, d));
+            VeryLong a = GetFirstPart(vl1, cutPos);
+            VeryLong b = GetSecondPart(vl1, cutPos);
+            VeryLong c = GetFirstPart(vl2, cutPos);
+            VeryLong d = GetSecondPart(vl2, cutPos);
+            VeryLong ac = KaratsubaMultiply(a, c);
+            VeryLong bd = KaratsubaMultiply(b, d);
+            VeryLong ab_cd = KaratsubaMultiply(a + b, c + d);
             return CalculateResult(ac, bd, ab_cd, b.Length + d.Length);
-            /*List<int> result;
-            if (vl1.value.Count <= vl2.value.Count)
-            {
-                result = vl2.value;
-                for (int i = vl1.value.Count - 1; i >= 0; i--)
-                {
-
-                }
-
-            }
+        }
+        static VeryLong CalculateResult(VeryLong ac, VeryLong bd, VeryLong ab_cd, int padding)
+        {
+            VeryLong term0 = ab_cd - ac - bd;
+            VeryLong term1 = new VeryLong(term0.ToString().PadRight(term0.Length + padding / 2, '0'));
+            VeryLong term2 = new VeryLong(ac.ToString().PadRight(ac.Length + padding, '0'));
+            return term1 + term2 + bd;
+        }
+        static VeryLong GetFirstPart(VeryLong str, int cutPos)
+        {
+            if (str.Length - cutPos > 0)
+                return new VeryLong(str.ToString().Remove(str.Length - cutPos));
             else
-            {
-                result = vl1.value;
-                for (int i = vl2.value.Count - 1; i >= 0; i--)
-                {
-
-                }
-            }
-            return new VeryLong(result);*/
+                return str;
         }
-
-
-        static string CalculateResult(string ac, string bd, string ab_cd, int padding)
+        static VeryLong GetSecondPart(VeryLong str, int cutPos)
         {
-            string term0 = StringSubtraction(StringSubtraction(ab_cd, ac), bd);
-            string term1 = term0.PadRight(term0.Length + padding / 2, '0');
-            string term2 = ac.PadRight(ac.Length + padding, '0');
-            return StringAddtion(StringAddtion(term1, term2), bd);
+            if (str.Length - cutPos > 0)
+                return new VeryLong(str.ToString().Substring(str.Length - cutPos));
+            else
+                return str;
         }
-
-        static string GetFirstPart(string str, int cutPos)
-        {
-            return str.Remove(str.Length - cutPos);
-        }
-
-        static string GetSecondPart(string str, int cutPos)
-        {
-            return str.Substring(str.Length - cutPos);
-        }
-
-        static int GetCutPosition(string first, string second)
+        static int GetCutPosition(VeryLong first, VeryLong second)
         {
             int min = Math.Min(first.Length, second.Length);
             if (min == 1)
@@ -861,99 +848,6 @@ namespace longMath
             if (min % 2 == 0)
                 return min / 2;
             return min / 2 + 1;
-        }
-
-        static string StringAddtion(string a, string b)
-        {
-            string result = "";
-            //a is always the smallest in length
-            if (a.Length > b.Length)
-            {
-                Swap(ref a, ref b);
-            }
-            a = a.PadLeft(b.Length, '0');
-            int length = a.Length;
-            int carry = 0, res;
-            for (int i = length - 1; i >= 0; i--)
-            {
-                int num1 = int.Parse(a.Substring(i, 1));
-                int num2 = int.Parse(b.Substring(i, 1));
-                res = (num1 + num2 + carry) % 10;
-                carry = (num1 + num2 + carry) / 10;
-                result = result.Insert(0, res.ToString());
-            }
-            if (carry != 0)
-                result = result.Insert(0, carry.ToString());
-            return SanitizeResult(result);
-        }
-
-        static string StringSubtraction(string a, string b)
-        {
-            bool resultNegative = false;
-            string result = "";
-            //a should be the larger number
-            if (StringIsSmaller(a, b))
-            {
-                Swap(ref a, ref b);
-                resultNegative = true;
-            }
-            b = b.PadLeft(a.Length, '0');
-            int length = a.Length;
-            int carry = 0, res;
-            for (int i = length - 1; i >= 0; i--)
-            {
-                bool nextCarry = false;
-                int num1 = int.Parse(a.Substring(i, 1));
-                int num2 = int.Parse(b.Substring(i, 1));
-                if (num1 - carry < num2)
-                {
-                    num1 = num1 + 10;
-                    nextCarry = true;
-                }
-                res = (num1 - num2 - carry);
-                result = result.Insert(0, res.ToString());
-                if (nextCarry)
-                    carry = 1;
-                else
-                    carry = 0;
-            }
-            result = SanitizeResult(result);
-            if (resultNegative)
-                return result.Insert(0, "-");
-            return result;
-        }
-
-        static bool StringIsSmaller(string a, string b)
-        {
-            if (a.Length < b.Length)
-                return true;
-            if (a.Length > b.Length)
-                return false;
-            char[] arrayA = a.ToCharArray();
-            char[] arrayB = b.ToCharArray();
-            for (int i = 0; i < arrayA.Length; i++)
-            {
-                if (arrayA[i] < arrayB[i])
-                    return true;
-                if (arrayA[i] > arrayB[i])
-                    return false;
-            }
-            return false;
-        }
-
-        static void Swap(ref string a, ref string b)
-        {
-            string temp = a;
-            a = b;
-            b = temp;
-        }
-
-        static string SanitizeResult(string result)
-        {
-            result = result.TrimStart(new char[] { '0' });
-            if (result.Length == 0)
-                result = "0";
-            return result;
         }
         #endregion
         public static VeryLong operator /(VeryLong vl1, VeryLong vl2)
@@ -969,16 +863,16 @@ namespace longMath
                     return -(vl1 / -vl2);
             else if (vl1 < 0 && vl2 < 0)
                 return -vl2 / -vl1;
-            int up = lbase;
+            int up = (int)Math.Pow(10,lbase);
             int down = 0;
             while (up - down != 1)
             {
-                if (vl2 * ((down + up) / 2) < vl1)
-                    down += ((down + up) / 2);
-                else if (vl2 * ((down + up) / 2) > vl1)
-                    up -= ((down + up) / 2);
+                if (vl2 * ((up + down) / 2) < vl1)
+                    down += (up - down) / 2;
+                else if (vl2 * ((up + down) / 2) > vl1)
+                    up += (down - up) / 2;
                 else
-                    return vl2 * ((down + up) / 2);
+                    return vl2 * ((up - down) / 2);
             }
             return vl2 * down;
         }
@@ -994,10 +888,10 @@ namespace longMath
             int down = 0;
             while (up - down != 1)
             {
-                if (vl2 * ((down + up) / 2) < vl1)
-                    down += ((down + up) / 2);
-                else if (vl2 * ((down + up) / 2) > vl1)
-                    up -= ((down + up) / 2);
+                if (vl2 * ((up + down) / 2) < vl1)
+                    down += (up - down) / 2;
+                else if (vl2 * ((up + down) / 2) > vl1)
+                    up += (down - up) / 2;
                 else
                     return new VeryLong(0);
             }
@@ -1035,27 +929,41 @@ namespace longMath
     {
         public static void Main(string[] args)
         {
-            string input = Console.ReadLine().Replace(" ","").Replace("(", "").Replace(")", "");
+            string input = "100000000*1".Replace(" ","").Replace("(", "").Replace(")", "");
             #region ifs
             if (input.Contains("^"))
             {
-                List<string> numbers = new List<string>(input.Split('^'));
-                for (int i = numbers.Count - 1; i > 0; i--)
+                string[] numbers = input.Split('^');
+                if (numbers.Length <= 1)
                 {
-                    //Pow(numbers[i-1], numbers[i]);
+                    Console.WriteLine("Слишком мало чисел");
+                    return;
                 }
+                VeryLong number = new VeryLong(numbers[0]);
+                for (int i = 1; i < numbers.Length; i++)
+                {
+                    number = VeryLong.Pow(number,new VeryLong(numbers[i]));
+                }
+                Console.WriteLine(number.ToString());
             }
             else if (input.Contains("/") || input.Contains(":"))
             {
-                List<string> numbers = new List<string>();
+                string[] numbers;
                 if (input.Contains("/"))
-                    numbers = new List<string>(input.Split('/'));
+                    numbers = input.Split('/');
                 else
-                    numbers = new List<string>(input.Split(':'));
-                for (int i = 0; i < numbers.Count; i++)
+                    numbers = input.Split(':');
+                if (numbers.Length <= 1)
                 {
-
+                    Console.WriteLine("Слишком мало чисел");
+                    return;
                 }
+                VeryLong number = new VeryLong(numbers[0]);
+                for (int i = 1; i < numbers.Length; i++)
+                {
+                    number /= new VeryLong(numbers[i]);
+                }
+                Console.WriteLine(number.ToString());
             }
             else if (input.Contains("*"))
             {
