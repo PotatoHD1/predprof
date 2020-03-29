@@ -610,7 +610,7 @@ namespace longMath
             return ToString().GetHashCode();
         }
         public static bool operator <(VeryLong vl1, VeryLong vl2)
-        {
+        {            
             return !(vl1 > vl2 || vl1 == vl2); // = !(vl1 > vl2) && !(vl1 == vl2)
         }
         public static bool operator >=(VeryLong vl1, VeryLong vl2)
@@ -767,15 +767,10 @@ namespace longMath
                 {
                     if (i != 0)
                     {
-                        if (vl1.value[i - 1] != 0)
-                        {
-                            vl1.value[i] -= vl2.value[i] + (int)Math.Pow(10, lbase);
+   
+                            vl1.value[i] -= vl2.value[i] - (int)Math.Pow(10, lbase);
                             vl1.value[i - 1]--;
-                        }
-                        else
-                        {
-                            vl1.value[i] -= vl2.value[i];
-                        }
+                        
                     }
                     else
                     {
@@ -791,11 +786,6 @@ namespace longMath
                     break;
 
             }
-            for (int i = 1; i < vl1.value.Count; i++)
-            {
-                if (vl1.value[i] < 0)
-                    vl1.value[i] *= -1;
-            }
             return vl1;
         }
         public static VeryLong operator *(VeryLong vl1, VeryLong vl2)
@@ -809,7 +799,25 @@ namespace longMath
                 return -vl2 * -vl1;
             else if (vl1 == 0 || vl2 == 0)
                 return new VeryLong(0);
-            return vl1;
+            List<int> result;
+            if (vl1.value.Count <= vl2.value.Count)
+            {
+                result = vl2.value;
+                for (int i = vl1.value.Count - 1; i >= 0; i--)
+                {
+
+                }
+
+            }
+            else
+            {
+                result = vl1.value;
+                for (int i = vl2.value.Count - 1; i >= 0; i--)
+                {
+
+                }
+            }
+            return new VeryLong(result);
         }
         public static VeryLong operator /(VeryLong vl1, VeryLong vl2)
         {
