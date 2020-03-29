@@ -745,38 +745,36 @@ namespace longMath
                     return vl1 + -vl2;
             else if (vl1< 0 && vl2< 0)
                 return vl2 - -vl1;
-            if (vl1.value.Count <= vl2.value.Count)
+
+            while (vl2.value.Count < vl1.value.Count)
             {
-                while (vl1.value.Count < vl2.value.Count)
-                {
-                    vl1.value.Insert(0, 0);
-                }
-            }
-            else
-            {
-                while (vl2.value.Count < vl1.value.Count)
-                {
-                    vl2.value.Insert(0, 0);
-                }
+                vl2.value.Insert(0, 0);
             }
             for (int i = vl1.value.Count - 1; i >= 0; i--)
             {
+                
                 if (vl1.value[i] - vl2.value[i] >= 0)
                     vl1.value[i] -= vl2.value[i];
                 else
                 {
                     if (i != 0)
-                    {
-   
+                    {   
                             vl1.value[i] -= vl2.value[i] - (int)Math.Pow(10, lbase);
-                            vl1.value[i - 1]--;
-                        
+                            vl1.value[i - 1]--;                        
                     }
                     else
                     {
                         vl1.value[i] -= vl2.value[i];
+                        if (vl1.value.Count < vl2.value.Count && vl1.value[i] < 0)
+                            vl1.value[i] *= -1;
                     }
                 }
+                if (vl1.value.Count < vl2.value.Count)
+                {
+                    vl1.value.Insert(0, 0);
+                    i++;
+                }
+                
             }
             for (int i = 0; i < vl1.value.Count; i++)
             {
