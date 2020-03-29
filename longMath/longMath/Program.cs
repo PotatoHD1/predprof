@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace longMath
@@ -635,7 +636,45 @@ namespace longMath
         }
         public static bool operator >(VeryLong vl1, VeryLong vl2)
         {
-            return true;
+            if (vl1 == vl2)
+                return false;
+            else if (vl1.value[0] < 0 && vl2.value[0] >= 0)
+                return false;
+            else if (vl1.value[0] >= 0 && vl2.value[0] < 0)
+                return true;
+            else if (vl1.value[0] < 0 && vl2.value[0] < 0)
+                return !(-vl1 > -vl2);
+            else
+            {
+                bool result = false;
+                if (vl1.value.Count <= vl2.value.Count)
+                {
+                   for (int i = 0; i < vl1.value.Count; i++)
+                    {
+                        if (vl1.value[i] > vl2.value[i])
+                        {
+                            result = true;
+                            break;
+                        }
+                        else if (vl1.value[i] < vl2.value[i])
+                            break;                        
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < vl2.value.Count; i++)
+                    {
+                        if (vl1.value[i] > vl2.value[i])
+                        {
+                            result = true;
+                            break;
+                        }
+                        else if (vl1.value[i] < vl2.value[i])
+                            break;
+                    }
+                }
+                return result;
+            }
         }
         public static VeryLong operator -(VeryLong vl1)
         {
@@ -833,21 +872,6 @@ namespace longMath
                 }
             }
             #endregion
-            else if (input.Contains("-"))
-            {
-                string[] numbers = input.Split('-');
-                if (numbers.Length <= 1)
-                {
-                    Console.WriteLine("Слишком мало чисел");
-                    return;
-                }
-                VeryLong number = new VeryLong(numbers[0]);
-                for (int i = 1; i < numbers.Length; i++)
-                {
-                    number -= new VeryLong(numbers[i]);
-                }
-                Console.WriteLine(number.ToString());
-            }            
             else if (input.Contains("+"))
             {
                 string[] numbers = input.Split('+');
@@ -863,18 +887,24 @@ namespace longMath
                 }
                 Console.WriteLine(number.ToString());
             }
+            else if (input.Contains("-"))
+            {
+                string[] numbers = input.Split('-');
+                if (numbers.Length <= 1)
+                {
+                    Console.WriteLine("Слишком мало чисел");
+                    return;
+                }
+                VeryLong number = new VeryLong(numbers[0]);
+                for (int i = 1; i < numbers.Length; i++)
+                {
+                    number -= new VeryLong(numbers[i]);
+                }
+                Console.WriteLine(number.ToString());
+            }            
+
             
 
         }
-
-        /*static string Pow(string number, string pow)
-        {
-        if (pow == "0")
-            return "1";
-        else if (pow % 2 == 0)
-            return Pow(number, pow / 2) * Pow(number, pow / 2);
-        else
-            return number * Pow(number, pow / 2) * Pow(number, pow / 2);
-    }*/
     }
 }
