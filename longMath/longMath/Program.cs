@@ -7,7 +7,7 @@ namespace longMath
     class VeryLong
     {
         const int lbase = 9;
-        public List<int> value { get; private set; }
+        public List<int> value { get; private set; }        
         public VeryLong(string value)
         {
             value = value.Replace(".", "").Replace(",", "");
@@ -631,20 +631,22 @@ namespace longMath
         }
         public static bool operator >(VeryLong vl1, VeryLong vl2)
         {
-            if (vl1 == vl2)
-                return false;
-            else if (vl1.value[0] < 0 && vl2.value[0] >= 0)
+            if (vl1.value[0] < 0 && vl2.value[0] >= 0)
                 return false;
             else if (vl1.value[0] >= 0 && vl2.value[0] < 0)
                 return true;
             else if (vl1.value[0] < 0 && vl2.value[0] < 0)
                 return !(-vl1 > -vl2);
+            else if (vl1.value.Count > vl2.value.Count)
+                return true;
+            else if (vl1.value.Count < vl2.value.Count)
+                return false;
             else
             {
                 bool result = false;
                 if (vl1.value.Count <= vl2.value.Count)
                 {
-                   for (int i = 0; i < vl1.value.Count; i++)
+                    for (int i = 0; i < vl1.value.Count; i++)
                     {
                         if (vl1.value[i] > vl2.value[i])
                         {
@@ -652,7 +654,7 @@ namespace longMath
                             break;
                         }
                         else if (vl1.value[i] < vl2.value[i])
-                            break;                        
+                            break;
                     }
                 }
                 else
@@ -797,7 +799,21 @@ namespace longMath
                 return -vl2 * -vl1;
             else if (vl1 == 0 || vl2 == 0)
                 return new VeryLong(0);
-            List<int> result;
+            return KaratsubaMultiply(vl1, vl2);
+        }        
+        #region KaratsubaMultiply
+        static VeryLong KaratsubaMultiply(VeryLong vl1, VeryLong vl2)
+        {
+            int cutPos = GetCutPosition(vl1, vl2);
+            string a = GetFirstPart(vl1, cutPos);
+            string b = GetSecondPart(vl1, cutPos);
+            string c = GetFirstPart(vl2, cutPos);
+            string d = GetSecondPart(vl2, cutPos);
+            string ac = KaratsubaMultiply(a, c);
+            string bd = KaratsubaMultiply(b, d);
+            string ab_cd = KaratsubaMultiply(StringAddtion(a, b), StringAddtion(c, d));
+            return CalculateResult(ac, bd, ab_cd, b.Length + d.Length);
+            /*List<int> result;
             if (vl1.value.Count <= vl2.value.Count)
             {
                 result = vl2.value;
@@ -815,21 +831,182 @@ namespace longMath
 
                 }
             }
-            return new VeryLong(result);
+            return new VeryLong(result);*/
         }
+
+
+        static string CalculateResult(string ac, string bd, string ab_cd, int padding)
+        {
+            string term0 = StringSubtraction(StringSubtraction(ab_cd, ac), bd);
+            string term1 = term0.PadRight(term0.Length + padding / 2, '0');
+            string term2 = ac.PadRight(ac.Length + padding, '0');
+            return StringAddtion(StringAddtion(term1, term2), bd);
+        }
+
+        static string GetFirstPart(string str, int cutPos)
+        {
+            return str.Remove(str.Length - cutPos);
+        }
+
+        static string GetSecondPart(string str, int cutPos)
+        {
+            return str.Substring(str.Length - cutPos);
+        }
+
+        static int GetCutPosition(string first, string second)
+        {
+            int min = Math.Min(first.Length, second.Length);
+            if (min == 1)
+                return 1;
+            if (min % 2 == 0)
+                return min / 2;
+            return min / 2 + 1;
+        }
+
+        static string StringAddtion(string a, string b)
+        {
+            string result = "";
+            //a is always the smallest in length
+            if (a.Length > b.Length)
+            {
+                Swap(ref a, ref b);
+            }
+            a = a.PadLeft(b.Length, '0');
+            int length = a.Length;
+            int carry = 0, res;
+            for (int i = length - 1; i >= 0; i--)
+            {
+                int num1 = int.Parse(a.Substring(i, 1));
+                int num2 = int.Parse(b.Substring(i, 1));
+                res = (num1 + num2 + carry) % 10;
+                carry = (num1 + num2 + carry) / 10;
+                result = result.Insert(0, res.ToString());
+            }
+            if (carry != 0)
+                result = result.Insert(0, carry.ToString());
+            return SanitizeResult(result);
+        }
+
+        static string StringSubtraction(string a, string b)
+        {
+            bool resultNegative = false;
+            string result = "";
+            //a should be the larger number
+            if (StringIsSmaller(a, b))
+            {
+                Swap(ref a, ref b);
+                resultNegative = true;
+            }
+            b = b.PadLeft(a.Length, '0');
+            int length = a.Length;
+            int carry = 0, res;
+            for (int i = length - 1; i >= 0; i--)
+            {
+                bool nextCarry = false;
+                int num1 = int.Parse(a.Substring(i, 1));
+                int num2 = int.Parse(b.Substring(i, 1));
+                if (num1 - carry < num2)
+                {
+                    num1 = num1 + 10;
+                    nextCarry = true;
+                }
+                res = (num1 - num2 - carry);
+                result = result.Insert(0, res.ToString());
+                if (nextCarry)
+                    carry = 1;
+                else
+                    carry = 0;
+            }
+            result = SanitizeResult(result);
+            if (resultNegative)
+                return result.Insert(0, "-");
+            return result;
+        }
+
+        static bool StringIsSmaller(string a, string b)
+        {
+            if (a.Length < b.Length)
+                return true;
+            if (a.Length > b.Length)
+                return false;
+            char[] arrayA = a.ToCharArray();
+            char[] arrayB = b.ToCharArray();
+            for (int i = 0; i < arrayA.Length; i++)
+            {
+                if (arrayA[i] < arrayB[i])
+                    return true;
+                if (arrayA[i] > arrayB[i])
+                    return false;
+            }
+            return false;
+        }
+
+        static void Swap(ref string a, ref string b)
+        {
+            string temp = a;
+            a = b;
+            b = temp;
+        }
+
+        static string SanitizeResult(string result)
+        {
+            result = result.TrimStart(new char[] { '0' });
+            if (result.Length == 0)
+                result = "0";
+            return result;
+        }
+        #endregion
         public static VeryLong operator /(VeryLong vl1, VeryLong vl2)
         {
-            if (vl1 < 0 ^ vl2 < 0)
+            if (vl1 == 0)
+                return new VeryLong(0);
+            else if (vl2 == 0)
+                throw new DivideByZeroException();
+            else if (vl1 < 0 ^ vl2 < 0)
                 if (vl1 < 0)
                     return -(vl2 / -vl1);
                 else
                     return -(vl1 / -vl2);
             else if (vl1 < 0 && vl2 < 0)
                 return -vl2 / -vl1;
-            return vl1;
+            int up = lbase;
+            int down = 0;
+            while (up - down != 1)
+            {
+                if (vl2 * ((down + up) / 2) < vl1)
+                    down += ((down + up) / 2);
+                else if (vl2 * ((down + up) / 2) > vl1)
+                    up -= ((down + up) / 2);
+                else
+                    return vl2 * ((down + up) / 2);
+            }
+            return vl2 * down;
         }
         public static VeryLong operator %(VeryLong vl1, VeryLong vl2)
         {
+            if (vl1 == 0)
+                return new VeryLong(0);
+            else if (vl2 == 0)
+                throw new DivideByZeroException();
+            vl1 = Mod(vl1);
+            vl2 = Mod(vl2);
+            int up = lbase;
+            int down = 0;
+            while (up - down != 1)
+            {
+                if (vl2 * ((down + up) / 2) < vl1)
+                    down += ((down + up) / 2);
+                else if (vl2 * ((down + up) / 2) > vl1)
+                    up -= ((down + up) / 2);
+                else
+                    return new VeryLong(0);
+            }
+            return vl1 - vl2 * down;
+        }
+        public static VeryLong Mod(VeryLong vl1)
+        {
+            if (vl1 < 0)
+                return -vl1;
             return vl1;
         }
         public static VeryLong Pow(VeryLong number, VeryLong pow)
