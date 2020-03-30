@@ -36,26 +36,32 @@ namespace GenBrackets
                 res += brMassive[2, i] * (int)Math.Pow(brType, brMassive.GetLength(1) - i - 1);
             }
             res--;            
-
             if (res >= 0)
             {
-                string res1 = "";
-                do
+                if (brMassive.GetLength(1) == 1)
                 {
-                    res1 = (res % brType).ToString() + res1;
-                    res /= brType;
-                    
-                } while (res >= brType);
-                res1 = res.ToString() + res1;
-                while (res1.Length < brMassive.GetLength(1))
-                {
-                    res1 = "0" + res1;
-                    
+                    brMassive[2, 0] = res;
                 }
-                for (int i = 0; i < brMassive.GetLength(1); i++)
+                else
                 {
-                    brMassive[2, i] = int.Parse(res1[i].ToString());
-                }
+                    string res1 = "";
+                    do
+                    {
+                        res1 = (res % brType).ToString() + res1;
+                        res /= brType;
+
+                    } while (res >= brType);
+                    res1 = res.ToString() + res1;
+                    while (res1.Length < brMassive.GetLength(1))
+                    {
+                        res1 = "0" + res1;
+
+                    }
+                    for (int i = 0; i < brMassive.GetLength(1); i++)
+                    {
+                        brMassive[2, i] = int.Parse(res1[i].ToString());
+                    }
+                }                
                 return true;
             }
             return false;
