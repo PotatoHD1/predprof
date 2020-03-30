@@ -813,7 +813,6 @@ namespace longMath
             }
             for (int i = vl1.value.Count - 1; i >= 0; i--)
             {
-
                 if (vl1.value[i] - vl2.value[i] >= 0)
                     vl1.value[i] -= vl2.value[i];
                 else
@@ -839,11 +838,23 @@ namespace longMath
             }
             for (int i = 0; i < vl1.value.Count; i++)
             {
-                if (vl1.value[i] == 0)
+                if (vl1.value[i] == 0 && i != vl1.value.Count - 1)
+                {
                     vl1.value.RemoveAt(0);
+                    i--;
+                }
                 else
                     break;
-
+            }
+            for (int i = 0; i < vl2.value.Count; i++)
+            {
+                if (vl2.value[i] == 0 && i != vl2.value.Count - 1)
+                {
+                    vl2.value.RemoveAt(0);
+                    i--;
+                }
+                else
+                    break;
             }
             return vl1;
         }
@@ -917,8 +928,30 @@ namespace longMath
                     return -(vl1 / -vl2);
             else if (vl1 < 0 && vl2 < 0)
                 return -vl2 / -vl1;
-            int up = cbase;
-            int down = 0;
+            else if (vl2 == 2)
+            {
+                VeryLong result = vl1 * 5;
+                for (int i = 0; i < result.value.Count; i++)
+                {
+                    if (result.value[i] / 10 != 0)
+                    {
+                        if (i + 1 < result.value.Count)
+                            result.value[i + 1] += result.value[i] % 10;
+                        result.value[i] /= 10;                        
+
+                    }
+                    else if (i == 0)
+                    { 
+                        if (i + 1 < result.value.Count)
+                            result.value[i + 1] += result.value[i] % 10;
+                    result.value.RemoveAt(0);
+                        }
+                }
+                return result;
+            }
+            VeryLong up = new VeryLong(new int[vl1.value.Count - vl2.value.Count + 1]);
+            up.value[0] = 1;
+            VeryLong down = new VeryLong();            
             while (up - down != 1)
             {
                 if (vl2 * ((up + down) / 2) < vl1)
@@ -985,7 +1018,7 @@ namespace longMath
     {
         public static void Main(string[] args)
         {
-            string input = "456765434567654345676543567890234567*9876542345678987654567892345678567890".Replace(" ", "").Replace("(", "").Replace(")", "");
+            string input = "4511263156549903003502425944020621017624018923015950620210037836734253630/456765434567654345676543567890234567".Replace(" ", "").Replace("(", "").Replace(")", "");
             #region ifs
             if (input.Contains("^"))
             {
