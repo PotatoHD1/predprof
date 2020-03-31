@@ -5,55 +5,5 @@
 {50000000000000000000000000000000000000000000}
 {500000000000000000000000000000000000000000000}
 4511263156549903003502425944020621017624018923015950620210037836734253630/456765434567654345676543567890234567
-for (int i = result.value.Count - 1; i >= 0; i--)
-            {
-                if (result.value[i] - vl2.value[i] >= 0)
-                    result.value[i] -= vl2.value[i];
-                else
-                {
-                    if (i != 0)
-                    {
-                        result.value[i] -= vl2.value[i] - cbase;
-                        result.value[i - 1]--;
-                    }
-                    else
-                    {
-                        result.value[i] -= vl2.value[i];
-                        if (result.value.Count < vl2.value.Count && result.value[i] < 0)
-                            result.value[i] *= -1;
-                    }
-                }
-                if (result.value.Count < vl2.value.Count)
-                {
-                    result.value.Insert(0, 0);
-                    i++;
-                }
 
-            }
-            for (int i = 0; i < result.value.Count; i++)
-            {
-                if (result.value[i] == 0 && i != result.value.Count - 1)
-                {
-                    result.value.RemoveAt(0);
-                    i--;
-                }
-                else
-                    break;
-            }
-            for (int i = 0; i < vl2.value.Count; i++)
-            {
-                if (vl2.value[i] == 0 && i != vl2.value.Count - 1)
-                {
-                    vl2.value.RemoveAt(0);
-                    i--;
-                }
-                else
-                    break;
-            }
-            for (int i = 0; i < result.value.Count; i++)
-            {
-                if (result.value[i] < 0)
-                {
-
-                }
-            }
+{7450580596923828125000000000000000000}

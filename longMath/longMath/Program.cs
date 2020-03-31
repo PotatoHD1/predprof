@@ -734,8 +734,9 @@ namespace longMath
         }
         public static VeryLong operator -(VeryLong vl1)
         {
-            vl1.value[0] = -vl1.value[0];
-            return vl1;
+            VeryLong result = new VeryLong(vl1) ;
+            result.value[0] = -result.value[0];
+            return result;
         }
         public static VeryLong operator --(VeryLong vl1)
         {
@@ -806,67 +807,40 @@ namespace longMath
                     return vl1 + -vl2;
             else if (vl1 < 0 && vl2 < 0)
                 return vl2 - -vl1;
-            else if(vl1 <= vl2)
+            else if (vl1 < vl2)
                 return -(vl2 - vl1);
-            while (vl2.value.Count < vl1.value.Count)
-            {
-                vl2.value.Insert(0, 0);
-            }
             VeryLong result = new VeryLong(vl1);
-            for (int i = result.value.Count - 1; i >= 0; i--)
+
+            for (int i = vl2.value.Count - 1; i >= 0; i--)
             {
-                if (result.value[i] - vl2.value[i] >= 0)
-                    result.value[i] -= vl2.value[i];
+                if (result.value[result.value.Count - vl2.value.Count + i] - vl2.value[i] >= 0)
+                {
+                    result.value[result.value.Count - vl2.value.Count + i] -= vl2.value[i];                    
+                }
                 else
                 {
-                    if (i != 0)
-                    {
-                        result.value[i] -= vl2.value[i] - cbase;
-                        result.value[i - 1]--;
-                    }
-                    else
-                    {
-                        result.value[i] -= vl2.value[i];
-                        if (result.value.Count < vl2.value.Count && result.value[i] < 0)
-                            result.value[i] *= -1;
-                    }
+                    var temp = ((ulong)cbase - (ulong)vl2.value[i]);
+                    var temp1 = (int)temp;
+                    
+                    result.value[result.value.Count - vl2.value.Count + i] += (int)((ulong)cbase - (ulong)vl2.value[i]);
+                    result.value[result.value.Count - vl2.value.Count + i - 1]--;
                 }
-                if (result.value.Count < vl2.value.Count)
-                {
-                    result.value.Insert(0, 0);
-                    i++;
-                }
-
             }
-            for (int i = 0; i < result.value.Count; i++)
+            for (int i = 0; i < result.value.Count - 1; i++)
             {
-                if (result.value[i] == 0 && i != result.value.Count - 1)
+                if (result.value[i] == 0)
                 {
                     result.value.RemoveAt(0);
                     i--;
                 }
                 else
-                    break;
-            }
-            for (int i = 0; i < vl2.value.Count; i++)
-            {
-                if (vl2.value[i] == 0 && i != vl2.value.Count - 1)
                 {
-                    vl2.value.RemoveAt(0);
-                    i--;
-                }
-                else
                     break;
-            }
-            for (int i = 0; i < result.value.Count; i++)
-            {
-                if (result.value[i] < 0)
-                {
-
                 }
             }
             return result;
         }
+
         public static VeryLong operator *(VeryLong vl1, VeryLong vl2)
         {
             if (vl1 < 0 ^ vl2 < 0)
@@ -899,10 +873,6 @@ namespace longMath
                     {
                         for (int j = vl2.value.Count - 1; j >= 0; j--)
                         {
-                            if (i == 2)
-                            {
-
-                            }
                             VeryLong temp = new VeryLong((ulong)vl1.value[i] * (ulong)vl2.value[j]);
                             temp.value.InsertRange(temp.value.Count,new int[vl2.value.Count+ vl1.value.Count - j - i - 2]);
                             result += temp;
@@ -940,6 +910,7 @@ namespace longMath
             {
                 VeryLong result = vl1 * 5;
                 int temp = 0;
+
                 for (int i = 0; i < result.value.Count; i++)
                 {
                     if (i == 0 && result.value[i] / 10 == 0)
@@ -958,17 +929,23 @@ namespace longMath
                     {
                         int temp1 = result.value[i] % 10;
                         result.value[i] /= 10;
-                        result.value[i] += temp * cbase;
+                        result.value[i] += temp * (cbase / 10);
                         temp = temp1;
-                    }                    
+                    }
+                    
                 }
                 return result;
             }
             VeryLong up = new VeryLong(new int[vl1.value.Count - vl2.value.Count + 1]);
             up.value[0] = 1;
-            VeryLong down = new VeryLong();            
+            VeryLong down = new VeryLong();
+            VeryLong temp2 = new VeryLong(), temp3 = temp2;
             while (up - down != 1)
             {
+                if (down > up)
+                { }
+                temp2 = up;
+                temp3 = down;
                 if (vl2 * ((up + down) / 2) < vl1)
                     down += (up - down) / 2;
                 else if (vl2 * ((up + down) / 2) > vl1)
@@ -976,6 +953,7 @@ namespace longMath
                 else
                     return vl2 * ((up - down) / 2);
             }
+            var a = temp2 * temp3;
             return vl2 * down;
         }
         public static VeryLong operator %(VeryLong vl1, VeryLong vl2)
