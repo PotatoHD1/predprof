@@ -757,46 +757,47 @@ namespace longMath
                     return vl1 - -vl2;
             else if (vl1 < 0 && vl2 < 0)
                 return -(-vl1 + -vl2);
+            VeryLong result = new VeryLong();
             if (vl1.value.Count <= vl2.value.Count)
             {
-                
+                result = new VeryLong(vl2);
                 for (int i = vl1.value.Count - 1; i >= 0; i--)
                 {
-                    if (vl2.value[vl2.value.Count - vl1.value.Count + i] + vl1.value[i] < Math.Pow(10, lbase))
-                        vl2.value[vl2.value.Count - vl1.value.Count + i] += vl1.value[i];
+                    if (result.value[result.value.Count - vl1.value.Count + i] + vl1.value[i] < Math.Pow(10, lbase))
+                        result.value[result.value.Count - vl1.value.Count + i] += vl1.value[i];
                     else
                     {
-                        vl2.value[vl2.value.Count - vl1.value.Count + i] += vl1.value[i] - cbase;
-                        if (vl2.value.Count - vl1.value.Count + i != 0)
-                            vl2.value[vl2.value.Count - vl1.value.Count + i - 1]++;
+                        result.value[result.value.Count - vl1.value.Count + i] += vl1.value[i] - cbase;
+                        if (result.value.Count - vl1.value.Count + i != 0)
+                            result.value[result.value.Count - vl1.value.Count + i - 1]++;
 
                         else
-                            vl2.value.Insert(0, 1);
+                            result.value.Insert(0, 1);
 
                     }
                 }
-                return vl2;
 
             }
             else
             {
+                result = new VeryLong(vl1);
                 for (int i = vl2.value.Count - 1; i >= 0; i--)
                 {
-                    if (vl1.value[vl1.value.Count - vl2.value.Count + i] + vl2.value[i] < Math.Pow(10, lbase))
-                        vl1.value[vl1.value.Count - vl2.value.Count + i] += vl2.value[i];
+                    if (result.value[result.value.Count - vl2.value.Count + i] + vl2.value[i] < Math.Pow(10, lbase))
+                        result.value[result.value.Count - vl2.value.Count + i] += vl2.value[i];
                     else
                     {
-                        vl1.value[vl1.value.Count - vl2.value.Count + i] += vl2.value[i] - cbase;
-                        if (vl1.value.Count - vl2.value.Count + i != 0)
-                            vl1.value[vl1.value.Count - vl2.value.Count + i - 1]++;
+                        result.value[result.value.Count - vl2.value.Count + i] += vl2.value[i] - cbase;
+                        if (result.value.Count - vl2.value.Count + i != 0)
+                            result.value[result.value.Count - vl2.value.Count + i - 1]++;
 
                         else
-                            vl1.value.Insert(0, 1);
+                            result.value.Insert(0, 1);
 
                     }
                 }
-                return vl1;
-            }            
+            }
+            return result;
         }
         public static VeryLong operator -(VeryLong vl1, VeryLong vl2)
         {
@@ -916,13 +917,20 @@ namespace longMath
                     if (i == 0 && result.value[i] / 10 == 0)
                     {
                         temp = result.value[i] % 10;
-                        result.value.RemoveAt(0);
-                        if (i < result.value.Count)
+                        if (result.value.Count != 1)
                         {
-                            int temp1 = result.value[i] % 10;
-                            result.value[i] /= 10;
-                            result.value[i] += temp * (cbase / 10);
-                            temp = temp1;
+                            result.value.RemoveAt(0);
+                            if (i < result.value.Count)
+                            {
+                                int temp1 = result.value[i] % 10;
+                                result.value[i] /= 10;
+                                result.value[i] += temp * (cbase / 10);
+                                temp = temp1;
+                            }
+                        }
+                        else
+                        {
+                            return new VeryLong();
                         }
                     }
                     else
@@ -936,25 +944,20 @@ namespace longMath
                 }
                 return result;
             }
-            VeryLong up = new VeryLong(new int[vl1.value.Count - vl2.value.Count + 1]);
+            VeryLong up = new VeryLong(vl1);
             up.value[0] = 1;
             VeryLong down = new VeryLong();
-            VeryLong temp2 = new VeryLong(), temp3 = temp2;
             while (up - down != 1)
             {
-                if (down > up)
-                { }
-                temp2 = up;
-                temp3 = down;
                 if (vl2 * ((up + down) / 2) < vl1)
                     down += (up - down) / 2;
-                else if (vl2 * ((up + down) / 2) > vl1)
+                else if (vl2 * ((up + down) / 2) >= vl1)
                     up -= (up - down) / 2;
-                else
-                    return vl2 * ((up - down) / 2);
             }
-            var a = temp2 * temp3;
-            return vl2 * down;
+            if (vl2 * up == vl1)
+                return up;
+            else
+                return down;
         }
         public static VeryLong operator %(VeryLong vl1, VeryLong vl2)
         {
@@ -1000,7 +1003,7 @@ namespace longMath
     {
         public static void Main(string[] args)
         {
-            string input = "4511263156549903003502425944020621017624018923015950620210037836734253630/456765434567654345676543567890234567".Replace(" ", "").Replace("(", "").Replace(")", "");
+            string input = "4511263156549903003502425944020621017624018923015950620210037836734253630^456".Replace(" ", "").Replace("(", "").Replace(")", "");
             #region ifs
             if (input.Contains("^"))
             {
