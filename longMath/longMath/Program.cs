@@ -1003,7 +1003,7 @@ namespace longMath
     {
         public static void Main(string[] args)
         {
-            string input = "4511263156549903003502425944020621017624018923015950620210037836734253630^456".Replace(" ", "").Replace("(", "").Replace(")", "");
+            string input = "4511263156549903003502425944020621017624018923015950620210037836734253630^200".Replace(" ", "").Replace("(", "").Replace(")", "");
             #region ifs
             if (input.Contains("^"))
             {
@@ -1018,7 +1018,7 @@ namespace longMath
                 {
                     number = VeryLong.Pow(number, new VeryLong(numbers[i]));
                 }
-
+                Console.WriteLine(number.ToString());
             }
             else if (input.Contains("/") || input.Contains(":"))
             {
