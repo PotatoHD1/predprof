@@ -806,41 +806,43 @@ namespace longMath
                     return vl1 + -vl2;
             else if (vl1 < 0 && vl2 < 0)
                 return vl2 - -vl1;
-
+            else if(vl1 <= vl2)
+                return -(vl2 - vl1);
             while (vl2.value.Count < vl1.value.Count)
             {
                 vl2.value.Insert(0, 0);
             }
-            for (int i = vl1.value.Count - 1; i >= 0; i--)
+            VeryLong result = new VeryLong(vl1);
+            for (int i = result.value.Count - 1; i >= 0; i--)
             {
-                if (vl1.value[i] - vl2.value[i] >= 0)
-                    vl1.value[i] -= vl2.value[i];
+                if (result.value[i] - vl2.value[i] >= 0)
+                    result.value[i] -= vl2.value[i];
                 else
                 {
                     if (i != 0)
                     {
-                        vl1.value[i] -= vl2.value[i] - cbase;
-                        vl1.value[i - 1]--;
+                        result.value[i] -= vl2.value[i] - cbase;
+                        result.value[i - 1]--;
                     }
                     else
                     {
-                        vl1.value[i] -= vl2.value[i];
-                        if (vl1.value.Count < vl2.value.Count && vl1.value[i] < 0)
-                            vl1.value[i] *= -1;
+                        result.value[i] -= vl2.value[i];
+                        if (result.value.Count < vl2.value.Count && result.value[i] < 0)
+                            result.value[i] *= -1;
                     }
                 }
-                if (vl1.value.Count < vl2.value.Count)
+                if (result.value.Count < vl2.value.Count)
                 {
-                    vl1.value.Insert(0, 0);
+                    result.value.Insert(0, 0);
                     i++;
                 }
 
             }
-            for (int i = 0; i < vl1.value.Count; i++)
+            for (int i = 0; i < result.value.Count; i++)
             {
-                if (vl1.value[i] == 0 && i != vl1.value.Count - 1)
+                if (result.value[i] == 0 && i != result.value.Count - 1)
                 {
-                    vl1.value.RemoveAt(0);
+                    result.value.RemoveAt(0);
                     i--;
                 }
                 else
@@ -856,7 +858,14 @@ namespace longMath
                 else
                     break;
             }
-            return vl1;
+            for (int i = 0; i < result.value.Count; i++)
+            {
+                if (result.value[i] < 0)
+                {
+
+                }
+            }
+            return result;
         }
         public static VeryLong operator *(VeryLong vl1, VeryLong vl2)
         {
@@ -933,28 +942,25 @@ namespace longMath
                 int temp = 0;
                 for (int i = 0; i < result.value.Count; i++)
                 {
-                    
                     if (i == 0 && result.value[i] / 10 == 0)
                     {
                         temp = result.value[i] % 10;
                         result.value.RemoveAt(0);
-                        if(i < result.value.Count)
+                        if (i < result.value.Count)
                         {
                             int temp1 = result.value[i] % 10;
                             result.value[i] /= 10;
-                            result.value[i] += temp * (cbase/10);
+                            result.value[i] += temp * (cbase / 10);
                             temp = temp1;
                         }
                     }
-                    else 
+                    else
                     {
                         int temp1 = result.value[i] % 10;
                         result.value[i] /= 10;
                         result.value[i] += temp * cbase;
                         temp = temp1;
-
-                    }
-                    
+                    }                    
                 }
                 return result;
             }
@@ -1023,7 +1029,7 @@ namespace longMath
                 string[] numbers = input.Split('^');
                 if (numbers.Length <= 1)
                 {
-                    Console.WriteLine("Слишком мало чисел");
+                   Console.WriteLine("Слишком мало чисел");
                     return;
                 }
                 VeryLong number = new VeryLong(numbers[0]);
@@ -1031,7 +1037,7 @@ namespace longMath
                 {
                     number = VeryLong.Pow(number, new VeryLong(numbers[i]));
                 }
-                Console.WriteLine(number.ToString());
+
             }
             else if (input.Contains("/") || input.Contains(":"))
             {
