@@ -914,7 +914,6 @@ namespace longMath
                 return result;
             }
         }
-
         public static VeryLong operator /(VeryLong vl1, VeryLong vl2)
         {
             if (vl1 == 0)
@@ -923,29 +922,39 @@ namespace longMath
                 throw new DivideByZeroException();
             else if (vl1 < 0 ^ vl2 < 0)
                 if (vl1 < 0)
-                    return -(vl2 / -vl1);
+                    return -(-vl1 / vl2);
                 else
                     return -(vl1 / -vl2);
             else if (vl1 < 0 && vl2 < 0)
-                return -vl2 / -vl1;
+                return -vl1 / -vl2;
             else if (vl2 == 2)
             {
                 VeryLong result = vl1 * 5;
+                int temp = 0;
                 for (int i = 0; i < result.value.Count; i++)
                 {
-                    if (result.value[i] / 10 != 0)
+                    
+                    if (i == 0 && result.value[i] / 10 == 0)
                     {
-                        if (i + 1 < result.value.Count)
-                            result.value[i + 1] += result.value[i] % 10;
-                        result.value[i] /= 10;                        
+                        temp = result.value[i] % 10;
+                        result.value.RemoveAt(0);
+                        if(i < result.value.Count)
+                        {
+                            int temp1 = result.value[i] % 10;
+                            result.value[i] /= 10;
+                            result.value[i] += temp * (cbase/10);
+                            temp = temp1;
+                        }
+                    }
+                    else 
+                    {
+                        int temp1 = result.value[i] % 10;
+                        result.value[i] /= 10;
+                        result.value[i] += temp * cbase;
+                        temp = temp1;
 
                     }
-                    else if (i == 0)
-                    { 
-                        if (i + 1 < result.value.Count)
-                            result.value[i + 1] += result.value[i] % 10;
-                    result.value.RemoveAt(0);
-                        }
+                    
                 }
                 return result;
             }
@@ -957,7 +966,7 @@ namespace longMath
                 if (vl2 * ((up + down) / 2) < vl1)
                     down += (up - down) / 2;
                 else if (vl2 * ((up + down) / 2) > vl1)
-                    up += (down - up) / 2;
+                    up -= (up - down) / 2;
                 else
                     return vl2 * ((up - down) / 2);
             }
@@ -973,18 +982,7 @@ namespace longMath
                 return new VeryLong(vl1.value[vl1.value.Count - 1] % 2);
             vl1 = Mod(vl1);
             vl2 = Mod(vl2);
-            int up = lbase;
-            int down = 0;
-            while (up - down != 1)
-            {
-                if (vl2 * ((up + down) / 2) < vl1)
-                    down += (up - down) / 2;
-                else if (vl2 * ((up + down) / 2) > vl1)
-                    up += (down - up) / 2;
-                else
-                    return new VeryLong(0);
-            }
-            return vl1 - vl2 * down;
+            return vl1 - vl1 / vl2 * vl2;
         }
         public static VeryLong Mod(VeryLong vl1)
         {
