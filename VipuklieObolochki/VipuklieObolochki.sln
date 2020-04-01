@@ -1,17 +1,25 @@
-
+﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VipuklieObolochki", "VipuklieObolochki\VipuklieObolochki.csproj", "{74C05D56-E297-4DB8-9C5A-E4E92F708987}"
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29728.190
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VipuklieObolochki", "VipuklieObolochki\VipuklieObolochki.csproj", "{7125D337-833B-4268-8532-FAF06FB28404}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|anycpu = Debug|anycpu
-		Release|anycpu = Release|anycpu
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{74C05D56-E297-4DB8-9C5A-E4E92F708987}.Debug|anycpu.ActiveCfg = Debug|anycpu
-		{74C05D56-E297-4DB8-9C5A-E4E92F708987}.Debug|anycpu.Build.0 = Debug|anycpu
-		{74C05D56-E297-4DB8-9C5A-E4E92F708987}.Release|anycpu.ActiveCfg = Release|anycpu
-		{74C05D56-E297-4DB8-9C5A-E4E92F708987}.Release|anycpu.Build.0 = Release|anycpu
+		{7125D337-833B-4268-8532-FAF06FB28404}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7125D337-833B-4268-8532-FAF06FB28404}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7125D337-833B-4268-8532-FAF06FB28404}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7125D337-833B-4268-8532-FAF06FB28404}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {009FAA4B-DF48-4D9A-815B-A5348227F36B}
 	EndGlobalSection
 EndGlobal
