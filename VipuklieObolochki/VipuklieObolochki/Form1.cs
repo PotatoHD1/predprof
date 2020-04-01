@@ -26,8 +26,8 @@ namespace VipuklieObolochki
         }
         private double GetAngle(Point a, Point b)
         {
-            return Math.Acos((a.X * b.X + a.Y * b.Y) / (Math.Sqrt(Math.Pow(a.X, 2) + Math.Pow(a.Y, 2)))
-                * Math.Sqrt(Math.Pow(b.X, 2) + Math.Pow(b.Y, 2)));
+            return Math.Acos((a.X * b.X + a.Y * b.Y) / Math.Sqrt(Math.Pow(a.X, 2) + Math.Pow(a.Y, 2))
+                / Math.Sqrt(Math.Pow(b.X, 2) + Math.Pow(b.Y, 2)));
         }
         private int GetPolarAngle(Point a, Point b, Point c)
         {
@@ -102,33 +102,51 @@ namespace VipuklieObolochki
                 points.Add(coordinates);
                 if (points.Count > 2)
                 {
-                    Process();
-                    if (temp.Count <= obolochka.Count)
+                    if (points.Count != 3)
                     {
-                        bool equals = temp.Count == obolochka.Count;
-                        for (int i = 0; i < temp.Count && equals; i++)
+                        Process();
+                        if (temp.Count <= obolochka.Count)
                         {
-                            if (temp[i].X != obolochka[i].X || temp[i].Y != obolochka[i].Y)
+                            bool equals = temp.Count == obolochka.Count;
+                            for (int i = 0; i < temp.Count && equals; i++)
                             {
-                                equals = false;
-                                break;
+                                if (temp[i].X != obolochka[i].X || temp[i].Y != obolochka[i].Y)
+                                {
+                                    equals = false;
+                                    break;
+                                }
                             }
-                        }
-                        if (!equals)
-                        {
-                            mainPB.Refresh();
-                            for (int i = 0; i < obolochka.Count - 1; i++)
+                            if (!equals)
                             {
-                                gr.DrawLine(pen, obolochka[i], obolochka[i + 1]);
-                            }
-                            gr.DrawLine(pen, obolochka[0], obolochka[obolochka.Count - 1]);
-                            foreach (var item in points)
-                            {
-                                gr.DrawEllipse(pen, item.X - 2, item.Y - 2, 5, 5);
+                                mainPB.Refresh();
+                                for (int i = 0; i < obolochka.Count - 1; i++)
+                                {
+                                    gr.DrawLine(pen, obolochka[i], obolochka[i + 1]);
+                                }
+                                gr.DrawLine(pen, obolochka[0], obolochka[obolochka.Count - 1]);
+                                foreach (var item in points)
+                                {
+                                    gr.DrawEllipse(pen, item.X - 2, item.Y - 2, 5, 5);
+                                }
                             }
                         }
                     }
+                    else
+                    {
+                        mainPB.Refresh();
+                        obolochka = new List<Point>(points);
+                        for (int i = 0; i < obolochka.Count - 1; i++)
+                        {
+                            gr.DrawLine(pen, obolochka[i], obolochka[i + 1]);
+                        }
+                        gr.DrawLine(pen, obolochka[0], obolochka[obolochka.Count - 1]);
+                        foreach (var item in points)
+                        {
+                            gr.DrawEllipse(pen, item.X - 2, item.Y - 2, 5, 5);
+                        }
+                    }
                 }
+                
             }
 
         }
