@@ -30,7 +30,6 @@
         {
             this.clearBtn = new System.Windows.Forms.Button();
             this.mainPB = new System.Windows.Forms.PictureBox();
-            this.debugCB = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.mainPB)).BeginInit();
             this.SuspendLayout();
             // 
@@ -53,30 +52,17 @@
             this.mainPB.TabStop = false;
             this.mainPB.Click += new System.EventHandler(this.mainPB_Click);
             // 
-            // debugCB
-            // 
-            this.debugCB.AutoSize = true;
-            this.debugCB.Location = new System.Drawing.Point(500, 183);
-            this.debugCB.Name = "debugCB";
-            this.debugCB.Size = new System.Drawing.Size(58, 17);
-            this.debugCB.TabIndex = 2;
-            this.debugCB.Text = "Debug";
-            this.debugCB.UseVisualStyleBackColor = true;
-            this.debugCB.CheckedChanged += new System.EventHandler(this.debugCB_CheckedChanged);
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(593, 368);
-            this.Controls.Add(this.debugCB);
             this.Controls.Add(this.mainPB);
             this.Controls.Add(this.clearBtn);
             this.Name = "MainForm";
             this.Text = "VipuklieObolochki";
             ((System.ComponentModel.ISupportInitialize)(this.mainPB)).EndInit();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -84,7 +70,6 @@
 
         private System.Windows.Forms.Button clearBtn;
         private System.Windows.Forms.PictureBox mainPB;
-        private System.Windows.Forms.CheckBox debugCB;
     }
 }
 
